@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>0xConfess — Social Wall</title>
+    <link rel="stylesheet" href="/client/css/style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/client/index.html">0xConfess</a>
+      <nav>
+        <a href="/client/index.html">Home</a>
+        <a href="/client/about.html">About</a>
+      </nav>
+    </header>
+
+    <div class="wall-layout">
+      <aside id="sidebar" class="sidebar" aria-label="Left sidebar">
+        <div class="sidebar-inner">
+          <section id="top-posts">
+            <h3>🔥 Top 5 Posts <span class="ai-tag">AI</span></h3>
+            <ul id="top5-list" class="compact-list"></ul>
+          </section>
+          <section id="active-users">
+            <h3>🏆 Most Active Users <span class="ai-tag">AI</span></h3>
+            <ul id="active-users-list" class="compact-list"></ul>
+          </section>
+        </div>
+        <button id="sidebar-toggle" class="sidebar-toggle" aria-expanded="true" aria-controls="sidebar">☰</button>
+      </aside>
+
+      <main id="main" class="wall-main">
+        <section class="compose">
+          <div id="wallet-area"></div>
+          <textarea id="new-post" aria-label="Write a confession" placeholder="Write something anonymous... (max 280 chars)" maxlength="280"></textarea>
+          <div class="compose-actions">
+            <button id="post-btn" class="btn" aria-label="Post confession">Post</button>
+            <span id="post-feedback" class="muted"></span>
+          </div>
+        </section>
+
+        <section id="posts" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <script type="module" src="/client/js/app.js"></script>
+  </body>
+</html>

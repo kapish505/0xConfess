@@ -1,0 +1,177 @@
+// Firestore Security Rules for Web3 Social Wall
+// Copy these rules to your Firebase Console under Firestore Database > Rules
+
+// ========================================
+// DEVELOPMENT MODE (Test Mode)
+// ========================================
+// ⚠️ WARNING: This allows anyone to read and write all data
+// Use this ONLY for initial development and testing
+// 
+// To use: Copy this entire block to your Firestore Rules editor
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+
+// ========================================
+// PRODUCTION MODE (Recommended for Demo)
+// ========================================
+// This provides basic security while allowing the app to function
+// Still client-only (cannot verify signatures server-side)
+//
+// To use: Copy this entire block to your Firestore Rules editor
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Posts collection
+    match /posts/{postId} {
+      // Anyone can read posts
+      allow read: if true;
+      
+      // Allow creating posts with required fields and validation
+      allow create: if request.resource.data.keys().hasAll([
+          'message', 'address', 'timestamp', 'likes', 'dislikes', 'likedBy', 'dislikedBy'
+        ]) &&
+        request.resource.data.message is string &&
+        request.resource.data.message.size() > 0 &&
+        request.resource.data.message.size() <= 500 &&
+        request.resource.data.address is string &&
+        request.resource.data.address.matches('^0x[a-fA-F0-9]{40}$') &&
+        request.resource.data.timestamp is number &&
+        request.resource.data.likes is number &&
+        request.resource.data.dislikes is number &&
+        request.resource.data.likedBy is list &&
+        request.resource.data.dislikedBy is list;
+      
+      // Allow updates for voting (likes/dislikes)
+      // Validates that only voting-related fields are modified
+      allow update: if request.resource.data.keys().hasAll([
+          'message', 'address', 'timestamp', 'likes', 'dislikes', 'likedBy', 'dislikedBy'
+        ]) &&
+        // Core fields cannot be changed
+        request.resource.data.message == resource.data.message &&
+        request.resource.data.address == resource.data.address &&
+        request.resource.data.timestamp == resource.data.timestamp &&
+        // Vote counts must be non-negative
+        request.resource.data.likes >= 0 &&
+        request.resource.data.dislikes >= 0 &&
+        request.resource.data.likedBy is list &&
+        request.resource.data.dislikedBy is list;
+      
+      // Delete is not allowed in this demo
+      // (You could allow deletion by original poster if you add authentication)
+      allow delete: if false;
+    }
+  }
+}
+
+// ========================================
+// NOTES FOR PRODUCTION DEPLOYMENT
+// ========================================
+//
+// The above rules provide basic validation but have limitations:
+//
+// 1. SIGNATURE VERIFICATION
+//    - Firestore rules CANNOT cryptographically verify MetaMask signatures
+//    - The signature field is stored but not verified server-side
+//    - To properly verify signatures, you need Firebase Cloud Functions
+//
+// 2. IDENTITY VERIFICATION
+//    - Anyone can submit a post with any wallet address
+//    - There's no server-side check that the submitter owns that wallet
+//    - This is a fundamental limitation of client-only apps
+//
+// 3. RACE CONDITIONS
+//    - The rules above allow updates but can't enforce transactional integrity
+//    - The client uses Firestore transactions, which helps
+//    - However, malicious clients could bypass this
+//
+// ========================================
+// SECURE PRODUCTION SETUP (Advanced)
+// ========================================
+//
+// For a truly secure production deployment, implement:
+//
+// 1. Firebase Authentication
+//    - Use Firebase Auth to create user accounts
+//    - Link wallet addresses to authenticated users
+//    - Use request.auth.uid in security rules
+//
+// 2. Cloud Functions for Signature Verification
+//    - Create a callable function to verify signatures
+//    - Use @metamask/eth-sig-util to recover addresses
+//    - Only create posts after verifying the signature
+//
+// Example Cloud Function (Node.js):
+// 
+// const functions = require('firebase-functions');
+// const admin = require('firebase-admin');
+// const { recoverPersonalSignature } = require('@metamask/eth-sig-util');
+// 
+// exports.createVerifiedPost = functions.https.onCall(async (data, context) => {
+//   const { message, address, signature } = data;
+//   
+//   // Verify signature
+//   const signatureMessage = `Web3 Social Wall\n\nI am posting the following message:\n"${message}"\n\nTimestamp: ${data.timestamp}`;
+//   const recoveredAddress = recoverPersonalSignature({
+//     data: signatureMessage,
+//     signature: signature,
+//   });
+//   
+//   if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
+//     throw new functions.https.HttpsError('permission-denied', 'Invalid signature');
+//   }
+//   
+//   // Create post
+//   await admin.firestore().collection('posts').add({
+//     message,
+//     address: address.toLowerCase(),
+//     timestamp: admin.firestore.FieldValue.serverTimestamp(),
+//     likes: 0,
+//     dislikes: 0,
+//     likedBy: [],
+//     dislikedBy: [],
+//     signature,
+//     verified: true
+//   });
+//   
+//   return { success: true };
+// });
+//
+// 3. Updated Security Rules with Authentication
+//
+// rules_version = '2';
+// service cloud.firestore {
+//   match /databases/{database}/documents {
+//     match /posts/{postId} {
+//       allow read: if true;
+//       allow create: if false; // Force use of Cloud Function
+//       allow update: if request.auth != null && 
+//                       resource.data.address == request.auth.token.walletAddress;
+//       allow delete: if request.auth != null &&
+//                       resource.data.address == request.auth.token.walletAddress;
+//     }
+//   }
+// }
+//
+// ========================================
+// RECOMMENDED SETUP STEPS
+// ========================================
+//
+// For this hackathon demo:
+// 1. Start with DEVELOPMENT MODE rules (test mode)
+// 2. Test all features (posting, voting, real-time updates)
+// 3. Switch to PRODUCTION MODE rules once testing is complete
+// 4. Monitor Firebase Console > Firestore > Usage for abuse
+//
+// For real production:
+// 1. Implement Firebase Authentication
+// 2. Set up Cloud Functions for signature verification
+// 3. Use authenticated security rules
+// 4. Add rate limiting and abuse prevention
+// 5. Monitor costs and set budget alerts
+//

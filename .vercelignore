@@ -1,5 +1,8 @@
 # Exclude all source files - only dist/public should be deployed
-server/
+# Note: server/routes.js is needed by api/index.js, so don't exclude it
+server/index.js
+server/vite.js
+server/storage.js
 client/src/
 client/js/
 client/index.html

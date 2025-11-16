@@ -5,17 +5,15 @@ server/vite.js
 server/storage.js
 client/src/
 client/js/
-client/index.html
 client/about.html
 client/index_confess.html
 client/wall.html
 client/css/
 shared/
-*.config.js
-*.config.ts
 drizzle.config.js
 postcss.config.js
 tailwind.config.js
+# Note: vite.config.js is needed for build, so don't exclude it
 components.json
 design_guidelines.md
 FIREBASE_SETUP.md

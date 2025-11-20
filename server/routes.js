@@ -8,7 +8,7 @@ export async function registerRoutes(app) {
       const { message, engagement = {} } = req.body;
       const { likes = 0, dislikes = 0, comments = 0 } = engagement;
 
-      if (!process.env.OPENAI_API_KEY) {
+      if (!process.env.GOOGLE_API_KEY) {
         return res.status(200).json({
           score: Math.min(Math.max(Math.round((likes * 2 + dislikes + comments * 1.5) / 10 + 1), 1), 5),
           label: ["Mild", "Spicy", "Very Spicy", "Wild", "Nuclear"][Math.min(Math.max(Math.round((likes * 2 + dislikes + comments * 1.5) / 10), 0), 4)],
@@ -16,37 +16,45 @@ export async function registerRoutes(app) {
         });
       }
 
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      const prompt = `You are a spice level evaluator for anonymous confessions. Rate the 'spiciness' of posts on a scale 1-5 based on engagement metrics and message content.
+
+Analyze this post's engagement and message to rate its spiciness on a scale 1-5.
+
+Message: "${message}"
+
+Metrics:
+- Likes: ${likes}
+- Dislikes: ${dislikes}
+- Comments: ${comments}
+
+Return ONLY valid JSON with no markdown: {"score": <int 1-5>, "label": "<string>"}`;
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${process.env.GOOGLE_API_KEY}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content: "You are a spice level evaluator for anonymous confessions. Rate the 'spiciness' of posts on a scale 1-5 based on engagement metrics and message content.",
-            },
-            {
-              role: "user",
-              content: `Analyze this post's engagement and message to rate its spiciness on a scale 1-5.\n\nMessage: "${message}"\n\nMetrics:\n- Likes: ${likes}\n- Dislikes: ${dislikes}\n- Comments: ${comments}\n\nReturn ONLY valid JSON with no markdown: {"score": <int 1-5>, "label": "<string>"}`,
-            },
-          ],
-          temperature: 0.7,
-          max_tokens: 100,
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 100,
+          }
         }),
       });
 
       if (!response.ok) {
         const error = await response.json();
-        console.error("OpenAI API error:", error);
-        throw new Error(`OpenAI API error: ${error.error?.message || "Unknown error"}`);
+        console.error("Gemini API error:", error);
+        throw new Error(`Gemini API error: ${error.error?.message || "Unknown error"}`);
       }
 
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content || "";
+      const content = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
       try {
         const result = JSON.parse(content);

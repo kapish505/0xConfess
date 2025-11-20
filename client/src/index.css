@@ -326,7 +326,7 @@
     font-family: "Inter", sans-serif;
     font-size: 2em;
     font-weight: 300;
-    color: white;
+    color: hsl(var(--foreground));
     border-radius: 50%;
     background-color: transparent;
     user-select: none;

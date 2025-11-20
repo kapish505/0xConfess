@@ -181,7 +181,7 @@ export function AboutPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <a
-                href="https://github.com/kapish505/SocialWall"
+                href="https://github.com/kapish505/0xConfess"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"

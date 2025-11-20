@@ -43,7 +43,7 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Connect</h3>
             <div className="flex gap-4">
               <a
-                href="https://github.com/kapish505/SocialWall"
+                href="https://github.com/kapish505/0xConfess"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-md bg-accent hover-elevate active-elevate-2 flex items-center justify-center transition-transform"
@@ -77,7 +77,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>Built with 💜 for the Web3 community | Hackathon Demo Project</p>
+          <p>CIPHER ON TOP</p>
         </div>
       </div>
     </footer>

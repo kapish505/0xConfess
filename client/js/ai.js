@@ -1,5 +1,5 @@
 export const AI_PROVIDER = 'openai';
-export let AI_API_KEY = 'process.env.OPENAI_API_KEY';
+export let AI_API_KEY = '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';
 function labelFromScore(s){ switch(s){ case 1: return 'Mild'; case 2: return 'Spicy'; case 3: return 'Very Spicy'; case 4: return 'Wild'; case 5: return 'Nuclear'; default: return 'Mild'; } }
 function clamp(v,min,max){ return Math.max(min, Math.min(max, Math.round(v))); }
 export async function evaluateSpice(text, engagement={}){

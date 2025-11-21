@@ -18,7 +18,7 @@ export function SocialWallPage({
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-4" data-testid="text-page-title">
-            Social Wall
+            0xConfess
           </h1>
           <p className="text-lg text-muted-foreground">
             Share your thoughts with the Web3 community

@@ -55,7 +55,7 @@ function AppContent() {
   useEffect(() => {
     if (!isConfigured || demoMode || posts.length === 0) return;
 
-    const unsubscribers = posts.map(post => 
+    const unsubscribers = posts.map(post =>
       subscribeToComments(post.id, (comments) => {
         setCommentsMap(prev => ({
           ...prev,
@@ -73,7 +73,7 @@ function AppContent() {
     try {
       const connection = await connectWallet();
       setWallet(connection);
-      
+
       toast({
         title: "Wallet connected",
         description: `Connected to ${connection.address.slice(0, 6)}...${connection.address.slice(-4)}`,
@@ -110,7 +110,7 @@ function AppContent() {
       let signature;
 
       try {
-        const signatureMessage = `Web3 Social Wall\n\nI am posting the following message:\n"${message}"\n\nTimestamp: ${Date.now()}`;
+        const signatureMessage = `0xConfess\n\nI am posting the following message:\n"${message}"\n\nTimestamp: ${Date.now()}`;
         signature = await signMessage(wallet.address, signatureMessage);
       } catch (signError) {
         if (signError.message.includes("rejected")) {
@@ -185,7 +185,7 @@ function AppContent() {
 
   const handleLike = async (postId) => {
     if (!wallet?.address || votingPostId) return;
-    
+
     setVotingPostId(postId);
 
     const updateLocalState = () => {
@@ -256,7 +256,7 @@ function AppContent() {
 
   const handleDislike = async (postId) => {
     if (!wallet?.address || votingPostId) return;
-    
+
     setVotingPostId(postId);
 
     const updateLocalState = () => {
@@ -418,7 +418,7 @@ function AppContent() {
             isConnected={!!wallet}
           />
         </Route>
-        
+
         <Route path="/confess">
           <ConfessPage
             posts={posts}
@@ -435,7 +435,7 @@ function AppContent() {
             commentsMap={commentsMap}
           />
         </Route>
-        
+
         <Route path="/about">
           <AboutPage />
         </Route>

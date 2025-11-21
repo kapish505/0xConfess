@@ -1,8 +1,8 @@
-# Web3 Social Wall 🌐
+# 0xConfess 🌐
 
-A decentralized social platform where users connect with MetaMask, post messages, and engage with the Web3 community through likes and dislikes. Built with React, TypeScript, Firebase Firestore, and modern Web3 technologies.
+A decentralized confession platform where users connect with MetaMask, post messages, and engage with the Web3 community through likes and dislikes. Built with React, TypeScript, Firebase Firestore, and modern Web3 technologies.
 
-![Web3 Social Wall](https://img.shields.io/badge/Web3-Social-blueviolet) ![Firebase](https://img.shields.io/badge/Firebase-Firestore-orange) ![MetaMask](https://img.shields.io/badge/MetaMask-Enabled-f6851b)
+![0xConfess](https://img.shields.io/badge/0xConfess-blueviolet) ![Firebase](https://img.shields.io/badge/Firebase-Firestore-orange) ![MetaMask](https://img.shields.io/badge/MetaMask-Enabled-f6851b)
 
 ## ✨ Features
 
@@ -59,7 +59,7 @@ A decentralized social platform where users connect with MetaMask, post messages
    
    c. Click the web icon `</>` to add a web app
    
-   d. Register your app with a nickname (e.g., "Web3 Social Wall")
+   d. Register your app with a nickname (e.g., "0xConfess")
    
    e. Copy the `firebaseConfig` object
 
@@ -113,7 +113,7 @@ A decentralized social platform where users connect with MetaMask, post messages
 ### Creating a Post
 
 1. Make sure your wallet is connected
-2. Navigate to the **Social Wall** page
+2. Navigate to the **Confess** page
 3. Type your message in the text area (max 500 characters)
 4. Click **"Post"** to share with the community
 
@@ -252,7 +252,7 @@ To properly verify wallet signatures, you need:
 ## 📁 Project Structure
 
 ```
-web3-social-wall/
+0xConfess/
 ├── client/
 │   ├── src/
 │   │   ├── components/
@@ -264,7 +264,7 @@ web3-social-wall/
 │   │   │   └── ProfileModal.tsx # User profile modal
 │   │   ├── pages/
 │   │   │   ├── HomePage.tsx     # Landing page
-│   │   │   ├── SocialWallPage.tsx # Main feed
+│   │   │   ├── ConfessPage.tsx  # Main feed
 │   │   │   └── AboutPage.tsx    # About/info page
 │   │   ├── lib/
 │   │   │   ├── firebase.ts      # Firebase initialization (YOU MUST CREATE THIS)
@@ -412,7 +412,7 @@ A lightweight client-only demo implementing an anonymous confession board with e
 
 1. **Serve the static files** from project root:
    ```bash
-   cd /Users/kapish/Work/SocialWall\ 2
+   cd /Users/kapish/Work/0xConfess
    python3 -m http.server 3000
    ```
 
@@ -566,5 +566,4 @@ activityScore = (postsCount * 3) + (likesReceived * 2)
 ---
 
 **Happy Building! Welcome to Web3!** 🚀
-# SocialWall_
-# SocialWall
+

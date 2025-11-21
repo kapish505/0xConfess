@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "NODE_ENV=development node server/index.js",
     "build": "vite build",
-    "postbuild": "node -e \"const fs=require('fs'); if(!fs.existsSync('dist/public/index.html')) { console.error('ERROR: Build failed - dist/public/index.html not found!'); process.exit(1); } console.log('✅ Build verified: dist/public/index.html exists');\"",
+    "postbuild": "node -e \"const fs=require('fs'); if(!fs.existsSync('dist/index.html')) { console.error('ERROR: Build failed - dist/index.html not found!'); process.exit(1); } console.log('✅ Build verified: dist/index.html exists');\"",
     "start": "NODE_ENV=production node dist/index.js",
     "db:push": "drizzle-kit push"
   },

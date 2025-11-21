@@ -2,6 +2,10 @@ export async function evaluateSpice(message, engagement = {}) {
   const { likes = 0, dislikes = 0, comments = 0 } = engagement;
 
   try {
+    // Add timeout to prevent hanging
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
     const response = await fetch("/api/evaluate-spice", {
       method: "POST",
       headers: {
@@ -11,7 +15,10 @@ export async function evaluateSpice(message, engagement = {}) {
         message,
         engagement: { likes, dislikes, comments }
       }),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`Server error: ${response.statusText}`);
@@ -24,6 +31,7 @@ export async function evaluateSpice(message, engagement = {}) {
     };
   } catch (error) {
     console.error("Error evaluating spice:", error);
+    // Fallback to simple calculation
     const engagementScore = likes * 2 + dislikes + comments * 1.5;
     const score = Math.min(Math.max(Math.round(engagementScore / 10 + 1), 1), 5);
     const labels = ["Mild", "Spicy", "Very Spicy", "Wild", "Nuclear"];
@@ -44,15 +52,15 @@ export function scoreTopPosts(posts, commentsMap = {}) {
 
 export function scoreActiveUsers(posts) {
   const userMap = new Map();
-  
+
   posts.forEach(p => {
     const addr = p.address?.toLowerCase();
     if (!addr) return;
-    
+
     if (!userMap.has(addr)) {
       userMap.set(addr, { address: p.address, postsCount: 0, likesReceived: 0 });
     }
-    
+
     const user = userMap.get(addr);
     user.postsCount += 1;
     user.likesReceived += (p.likes || 0);

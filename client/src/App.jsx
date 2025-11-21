@@ -250,7 +250,7 @@ function AppContent() {
         variant: "destructive",
       });
     } finally {
-      setTimeout(() => setVotingPostId(undefined), 300);
+      setVotingPostId(undefined);
     }
   };
 
@@ -321,7 +321,7 @@ function AppContent() {
         variant: "destructive",
       });
     } finally {
-      setTimeout(() => setVotingPostId(undefined), 300);
+      setVotingPostId(undefined);
     }
   };
 
